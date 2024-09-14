@@ -7,7 +7,7 @@
 ## 📖 Code de conduite
 Merci de lire notre [Code de conduite](https://github.com/Margouta/PluginOpenMC/blob/main/CODE_OF_CONDUCT.md) pour assurer un moment convivial à tous les contributeurs
 
-### **❗ TOUTES UTILISATION DE CHATGPT OU AUTRE SERAS BANNI DU PROJET**
+### **❗ TOUTE UTILISATION DE CHATGPT OU AUTRE SERA BANNIE DU PROJET**
 
 ## 📥 Ouvrir une Issue
 Avant de créer une issue, soyez sûr d'avoir la version la plus récente du plugin
