@@ -18,4 +18,4 @@ LIEN DU SITE WEB : `www.openmc.fr` ou [Cick ici !](https://openmc.fr)
 Projet sous [GPL-3.0 license](https://choosealicense.com/licenses/gpl-3.0/).
 
 ---
-Merci à @axenodev 🥛 pour la configuration (pas bancale) du repo.
+Merci à @axenodev 🍩 pour la configuration (pas bancale) du repo.
