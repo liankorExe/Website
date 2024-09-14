@@ -11,8 +11,8 @@ Site Web collaboratif pour un serveur : VOTRE serveur !
 4. Une fois qu'une fonctionnalité est implémentée et fonctionnelle, créez une pull request.
 5. Après approbation, elle sera disponible sur le serveur de développement pour les tests.
 
-IP DU SERVEUR : `play.openmc.fr` (1.21.1 Java Edition)
-LIEN DU SITE WEB : `www.openmc.fr` ou [Clique ici !](https://openmc.fr)
+- IP DU SERVEUR : `play.openmc.fr` (1.21.1 Java Edition)
+- LIEN DU SITE WEB : `www.openmc.fr` ou [Clique ici !](https://openmc.fr)
 
 ## 📃 License
 Projet sous [GPL-3.0 license](https://choosealicense.com/licenses/gpl-3.0/).
