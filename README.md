@@ -14,6 +14,18 @@ Site Web collaboratif pour un serveur : VOTRE serveur !
 - IP DU SERVEUR : `play.openmc.fr` (1.21.1 Java Edition)
 - LIEN DU SITE WEB : `www.openmc.fr` ou [Clique ici !](https://openmc.fr)
 
+## 🚧 Comment lancer le code ?
+❗ ***Requis NodeJS v20***
+
+1. Installer les dépendences 
+```powershell
+npm install
+```
+2. Démarrer le serveur web
+```powershell
+npm run dev
+```
+
 ## 📃 License
 Projet sous [GPL-3.0 license](https://choosealicense.com/licenses/gpl-3.0/).
 
