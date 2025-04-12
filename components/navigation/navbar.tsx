@@ -21,12 +21,15 @@ export default function Navbar() {
         <div className="flex justify-center w-full">
             <div
                 className={`
-                    fixed top-0 z-50 p-4 bg-primary/70 dark:bg-primary/10 transition-all duration-200 ease-in-out text-white flex items-center
+                    fixed top-0 z-50 p-4 bg-primary/70 dark:bg-primary/10 text-white flex items-center
+                    transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform
                     ${isScrolled
-                        ? "w-full backdrop-blur-2xl"
-                        : "max-w-screen-2xl w-full rounded-2xl mt-4"
+                        ? "w-full backdrop-blur-2xl scale-100 translate-y-0 rounded-none shadow-xl"
+                        : "max-w-screen-2xl w-full rounded-2xl mt-4 scale-95 translate-y-2 shadow-none"
                     }`}
             >
+
+
                 <div>
                     <Link href="/">
                         <Image src={`./branding/logo.webp`} alt="Logo" width={200} height={50} />
