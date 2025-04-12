@@ -3,13 +3,14 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { ArrowRightIcon } from "lucide-react"
 import { NAVBAR_LINKS } from "@/config";
+import { prefix } from "@/lib/prefix";
 
 export default function Navbar() {
     return (
         <div className="p-4 bg-primary/70 dark:bg-primary/10 text-white flex items-center rounded-2xl mt-4">
             <div>
                 <Link href="/">
-                    <Image src="/branding/logo.webp" alt="Logo" width={200} height={50} />
+                    <Image src={`${prefix}/branding/logo.webp`} alt="Logo" width={200} height={50} />
                 </Link>
             </div>
             <div className="flex-grow flex justify-center">
