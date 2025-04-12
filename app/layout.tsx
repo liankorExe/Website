@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "OpenMC",
   description: "Serveur Minecraft Open-Source",
+  icons: {
+    icon: "/branding/logoomc.png",
+    shortcut: "/branding/logoomc.png",
+    apple: "/branding/logoomc.png",
+  },
 };
 
 export default function RootLayout({
