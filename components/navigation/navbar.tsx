@@ -21,30 +21,31 @@ export default function Navbar() {
         <div className="flex justify-center w-full">
             <div
                 className={`
-                    fixed top-0 z-50 dark:bg-primary/10 transition-all duration-200 ease-in-out text-white flex items-center
+                    fixed top-0 z-50 p-4 bg-primary/70 dark:bg-primary/10 transition-all duration-200 ease-in-out text-white flex items-center
                     ${isScrolled
-                        ? "w-full py-4 bg-primary/90 backdrop-blur-2xl"
-                        : "max-w-screen-2xl w-full p-4 bg-primary/70 dark:bg-primary/10 rounded-2xl mt-4"
+                        ? "w-full backdrop-blur-2xl"
+                        : "max-w-screen-2xl w-full rounded-2xl mt-4"
                     }`}
             >
                 <div>
                     <Link href="/">
-                        <Image src={`./branding/logo.webp`} alt="Logo" width={200} height={50} />
+                        <Image src={`/branding/logo.webp`} alt="Logo" width={200} height={50} />
                     </Link>
                 </div>
-                <div className="flex-grow flex justify-center">
+                <div className="flex-grow flex justify-center gap-4 items-center">
                     {NAVBAR_LINKS.map((link) => (
-                        <Button
+                        <div
                             key={link.href}
-                            variant="link"
-                            size="lg"
-                            className="text-white"
-                            asChild
+                            className="text-white px-2 py-0.5 rounded-md hover:bg-black/40 border border-transparent hover:border-white/10 relative group transition-all duration-300 ease-in-out"
                         >
-                            <Link href={link.href} target={link.external ? "_blank" : undefined}>
+                            <Link
+                                href={link.href}
+                                target={link.external ? "_blank" : undefined}
+                                className="transition-all duration-300 ease-in-out group-hover:py-1 block py-0.5"
+                            >
                                 {link.label}
                             </Link>
-                        </Button>
+                        </div>
                     ))}
                 </div>
                 <div>
