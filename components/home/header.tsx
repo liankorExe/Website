@@ -5,7 +5,6 @@ import { ArrowRightIcon, Heart } from "lucide-react";
 import Link from "next/link";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { Button } from "@/components/ui/button";
-import { prefix } from "@/lib/prefix";
 export default function Header() {
     return (
         <div className="relative">
@@ -61,7 +60,7 @@ export default function Header() {
                 </div>
                 <div className="mt-8 relative">
                     <Image
-                        src={`${prefix}/placeholder/homepage.webp`}
+                        src={`./placeholder/homepage.webp`}
                         alt="Placeholder"
                         width={1280}
                         height={50}
