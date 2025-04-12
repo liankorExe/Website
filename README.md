@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Site Web OpenMC 🔗
 
-## Getting Started
+OpenMC est un projet communautaire open-source dédié à la création d'un serveur Minecraft innovant et collaboratif.
 
-First, run the development server:
+<a href="https://github.com/ServerOpenMC/Website/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ServerOpenMC/Website" alt="Contributeurs" />
+</a>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🤝 Comment contribuer
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Forkez ce dépôt en cliquant sur le bouton "Fork" en haut à droite de la page GitHub.
+2. Forkez le dépôt et rejoignez la [communauté Discord](https://discord.gg/aywen-communaute-1161296442577653802).
+3. Suivez les directives dans [CONTRIBUTING.md](https://github.com/ServerOpenMC/Website/blob/main/CONTRIBUTING.md).
+4. Une fois une fonctionnalité implémentée et fonctionnelle, créez une pull request.
+5. Après approbation, la fonctionnalité sera disponible sur le serveur de développement pour des tests.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **IP du serveur** : `play.openmc.fr` (Minecraft Java Edition 1.21.1)
+- **Site web** : [openmc.fr](https://openmc.fr)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚧 Démarrage
 
-## Learn More
+### Prérequis
 
-To learn more about Next.js, take a look at the following resources:
+- **Node.js >20** est requis.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Étapes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Cloner ce répo :
+   ```bash
+   $ git clone https://github.com/ServerOpenMC/Website.git
+   ```
+2. Installez les dépendances :
+   ```bash
+   $ cd Website
+   $ npm install
+   ```
+3. Lancez le serveur de développement :
+   ```bash
+   $ npm run dev
+   ```
 
-## Deploy on Vercel
+## 🛠️ Technologies utilisées
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js** : Framework React pour le rendu côté serveur et la génération de sites statiques.
+- **Tailwind CSS** : Framework CSS utilitaire pour un design rapide et réactif.
+- **Shadcn UI** : Primitives UI pour des composants accessibles et stylisés.
+- **TypeScript** : Superset de JavaScript pour un typage statique.
+- **ESLint** : Linter pour maintenir un code propre et cohérent.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📃 Licence
+
+Ce projet est sous licence [GPL-3.0 License](https://choosealicense.com/licenses/gpl-3.0/).
