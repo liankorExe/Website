@@ -11,8 +11,13 @@ OpenMC est un projet communautaire open-source dédié à la création d'un serv
 1. Forkez ce dépôt en cliquant sur le bouton "Fork" en haut à droite de la page GitHub.
 2. Forkez le dépôt et rejoignez la [communauté Discord](https://discord.gg/aywen-communaute-1161296442577653802).
 3. Suivez les directives dans [CONTRIBUTING.md](https://github.com/ServerOpenMC/Website/blob/main/CONTRIBUTING.md).
-4. Une fois une fonctionnalité implémentée et fonctionnelle, créez une pull request.
-5. Après approbation, la fonctionnalité sera disponible sur le serveur de développement pour des tests.
+4. Avant de créer une pull request, vérifiez que le code se build correctement :
+   ```bash
+   $ npm run build
+   ```
+   Si des erreurs ou des warnings apparaissent, corrigez-les.
+5. Une fois une fonctionnalité implémentée et fonctionnelle, créez une pull request.
+6. Après approbation, la fonctionnalité sera disponible sur le serveur de développement pour des tests.
 
 - **IP du serveur** : `play.openmc.fr` (Minecraft Java Edition 1.21.1)
 - **Site web** : [openmc.fr](https://openmc.fr)
