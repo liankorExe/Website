@@ -29,7 +29,7 @@ export default function Navbar() {
             >
                 <div>
                     <Link href="/">
-                        <Image src={`/branding/logo.webp`} alt="Logo" width={200} height={50} />
+                        <Image src={`./branding/logo.webp`} alt="Logo" width={200} height={50} />
                     </Link>
                 </div>
                 <div className="flex-grow flex justify-center gap-4 items-center">
