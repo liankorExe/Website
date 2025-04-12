@@ -99,7 +99,7 @@ export default function Navbar() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <nav className="flex flex-col gap-4 max-w-md mx-auto">
-                            {NAVBAR_LINKS.map((link, _) => (
+                            {NAVBAR_LINKS.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
