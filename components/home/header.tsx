@@ -61,8 +61,8 @@ export default function Header() {
                 </div>
                 <div className="mt-8 relative">
                     <Image
-                        src="/placeholder/homepage.webp"
-                        alt="Logo"
+                        src="placeholder/homepage.webp"
+                        alt="Placeholder"
                         width={1280}
                         height={50}
                         quality={100}
