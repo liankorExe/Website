@@ -5,6 +5,7 @@ import { ArrowRightIcon, Heart } from "lucide-react";
 import Link from "next/link";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { Button } from "@/components/ui/button";
+
 export default function Header() {
     return (
         <div className="relative">
@@ -46,15 +47,25 @@ export default function Header() {
                                 />
                             </Button>
                             <Button variant="secondary" className="group" asChild>
-                                <Link href="https://github.com/ServerOpenMC/" target="_blank">
+                                <Link href="https://github.com/ServerOpenMC/" target="_blank" className="flex items-center">
                                     Contribuer
-                                    <Heart
-                                        className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
-                                        size={16}
-                                        aria-hidden="true"
-                                    />
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="opacity-60 transition-transform heart-icon"
+                                    >
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                    </svg>
                                 </Link>
                             </Button>
+
                         </div>
                     </div>
                 </div>
