@@ -29,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="max-w-screen-2xl mx-auto">
+        <main className="max-w-full mx-auto">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
