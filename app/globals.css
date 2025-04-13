@@ -133,3 +133,34 @@
     background-position: calc(100% + var(--shiny-width)) 0;
   }
 }
+
+.heart-icon {
+  transition: transform 0.3s ease, fill 0.3s ease;
+}
+
+.group:hover .heart-icon {
+  animation: heart-bounce 0.8s ease forwards;
+}
+
+@keyframes heart-bounce {
+  0% {
+    transform: scale(1) rotate(0deg);
+    fill: none;
+  }
+  25% {
+    transform: scale(1.2) rotate(15deg);
+    fill: #e63946;
+    color: #e63946;
+  }
+  50% {
+    transform: scale(0.9) rotate(-15deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    color: #e63946;
+    fill: #e63946;
+  }
+}

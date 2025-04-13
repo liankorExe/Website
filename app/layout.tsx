@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "OpenMC",
   description: "Serveur Minecraft Open-Source",
+  icons: {
+    icon: "./branding/logoomc.png",
+    shortcut: "./branding/logoomc.png",
+    apple: "./branding/logoomc.png",
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="max-w-screen-2xl mx-auto">
+        <main className="max-w-full mx-auto">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
