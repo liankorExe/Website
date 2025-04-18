@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { Button } from "@/components/ui/button";
+import homePageImage from "@/public/placeholder/homepage.webp";
 
 export default function Header() {
     return (
@@ -71,7 +72,7 @@ export default function Header() {
 
                 <div className="mt-10 w-full max-w-5xl relative rounded-4xl overflow-hidden">
                     <Image
-                        src={`./placeholder/homepage.webp`}
+                        src={homePageImage}
                         alt="Placeholder"
                         width={1280}
                         height={720}
