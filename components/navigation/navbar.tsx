@@ -121,7 +121,7 @@ export default function Navbar() {
                             <Button
                                 className="w-full group py-6 text-base mt-2 bg-white/10 active:bg-white/20
                                 border border-white/20 active:border-white/30 transition-all duration-300"
-                                onClick={() => setMenuOpen(false)}
+                                onClick={() => { setMenuOpen(false); router.push("/rejoindre"); }}
                             >
                                 Rejoindre le Serveur
                                 <ArrowRightIcon
