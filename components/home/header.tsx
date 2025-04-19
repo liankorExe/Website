@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
 import { cn } from "@/lib/utils";
