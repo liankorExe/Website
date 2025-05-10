@@ -42,7 +42,7 @@ export default function Header() {
                             OpenMC est un projet communautaire open-source dédié à la création d&apos;un serveur Minecraft innovant et collaboratif.
                         </p>
                         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center">
-                            <Button className="group w-full sm:w-auto" onClick={() => router.push("/rejoindre")}>
+                            <Button className="group w-full sm:w-auto" onClick={() => router.push("/join")}>
                                 Rejoindre le Serveur
                                 <ArrowRightIcon
                                     className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
