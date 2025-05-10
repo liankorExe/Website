@@ -24,7 +24,7 @@ export default function Page() {
         alt="Logo du serveur"
         width={120}
         height={120}
-        className="rounded-full shadow-lg mb-6"
+        className="shadow-lg mb-6"
       />
       <h1 className="text-5xl font-extrabold text-center text-gray-800 dark:text-gray-100">
         Rejoindre le Serveur Minecraft
