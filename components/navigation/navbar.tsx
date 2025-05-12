@@ -6,11 +6,14 @@ import { Button } from "../ui/button";
 import { ArrowRightIcon } from "lucide-react"
 import { NAVBAR_LINKS } from "@/config";
 import { useEffect, useState } from "react";
+import Logo from "@/public/branding/logo.webp";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
 
     const [isScrolled, setIsScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -45,7 +48,7 @@ export default function Navbar() {
             >
                 <div className="flex items-center gap-4">
                     <Link href="/">
-                        <Image src={`./branding/logo.webp`} alt="Logo" width={200} height={50} />
+                        <Image src={Logo} alt="Logo" width={200} height={50} />
                     </Link>
                 </div>
                 <div className="hidden md:flex flex-grow justify-center gap-4 items-center">
@@ -65,7 +68,7 @@ export default function Navbar() {
                     ))}
                 </div>
                 <div className="hidden md:flex">
-                    <Button className="group">
+                    <Button className="group" onClick={() => router.push("/join")}>
                         Rejoindre le Serveur
                         <ArrowRightIcon
                             className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
@@ -118,7 +121,7 @@ export default function Navbar() {
                             <Button
                                 className="w-full group py-6 text-base mt-2 bg-white/10 active:bg-white/20
                                 border border-white/20 active:border-white/30 transition-all duration-300"
-                                onClick={() => setMenuOpen(false)}
+                                onClick={() => { setMenuOpen(false); router.push("/join"); }}
                             >
                                 Rejoindre le Serveur
                                 <ArrowRightIcon

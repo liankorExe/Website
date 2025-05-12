@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
 import { cn } from "@/lib/utils";
@@ -5,8 +6,11 @@ import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { Button } from "@/components/ui/button";
+import homePageImage from "@/public/placeholder/homepage.webp";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+    const router = useRouter();
     return (
         <div className="relative px-4 sm:px-6 lg:px-8">
             <DotPattern
@@ -38,7 +42,7 @@ export default function Header() {
                             OpenMC est un projet communautaire open-source dédié à la création d&apos;un serveur Minecraft innovant et collaboratif.
                         </p>
                         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center items-center">
-                            <Button className="group w-full sm:w-auto">
+                            <Button className="group w-full sm:w-auto" onClick={() => router.push("/join")}>
                                 Rejoindre le Serveur
                                 <ArrowRightIcon
                                     className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
@@ -71,7 +75,7 @@ export default function Header() {
 
                 <div className="mt-10 w-full max-w-5xl relative rounded-4xl overflow-hidden">
                     <Image
-                        src={`./placeholder/homepage.webp`}
+                        src={homePageImage}
                         alt="Placeholder"
                         width={1280}
                         height={720}
