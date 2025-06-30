@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { ArrowRightIcon, Menu, X } from "lucide-react";
+import { ArrowRightIcon, Menu } from "lucide-react";
 import { NAVBAR_LINKS } from "@/config";
 import { useEffect, useState } from "react";
 import Logo from "@/public/branding/logo.webp";
