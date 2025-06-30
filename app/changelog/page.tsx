@@ -22,6 +22,12 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ReactMarkdown from "react-markdown";
 import {
   Calendar,
@@ -32,6 +38,10 @@ import {
   User,
   AlertCircle,
   RefreshCw,
+  Link,
+  GitPullRequest,
+  GitCompare,
+  Github,
 } from "lucide-react";
 import { GitHubApi } from "@/lib/github-cache";
 
@@ -110,6 +120,123 @@ const cleanReleaseBody = (body: string) => {
     )
     .replace(/<!-- .* -->\s*/g, "")
     .trim();
+};
+
+const convertUrlsToMarkdown = (text: string) => {
+  if (!text) return text;
+
+  let processedText = text.replace(
+    /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/(pull|compare)\/([^\s\)]+)/g,
+    (match, owner, repo, type, id) => {
+      let linkText = "";
+      if (type === "pull") {
+        const prNumber = id.split(/[\/\?#]/)[0];
+        linkText = `PR #${prNumber}`;
+      } else if (type === "compare") {
+        linkText = "Changelog complet";
+      }
+      return `[${linkText}](${match})`;
+    }
+  );
+
+  processedText = processedText.replace(
+    /@([a-zA-Z0-9_-]+)(?!\]\()/g,
+    (match, username) => {
+      return `[@${username}](https://github.com/${username})`;
+    }
+  );
+
+  return processedText;
+};
+
+const getLinkIcon = (href: string) => {
+  if (href.includes("github.com") && href.includes("/pull/")) {
+    return <GitPullRequest className="w-2.5 h-2.5 flex-shrink-0" />;
+  } else if (href.includes("github.com") && href.includes("/compare/")) {
+    return <GitCompare className="w-2.5 h-2.5 flex-shrink-0" />;
+  } else if (
+    (href.includes("github.com/") && !href.includes("/")) ||
+    href.match(/github\.com\/[^\/]+$/)
+  ) {
+    return <User className="w-2.5 h-2.5 flex-shrink-0" />;
+  }
+  return <Link className="w-2.5 h-2.5 flex-shrink-0" />;
+};
+
+const PullRequestLink = ({
+  href,
+  prNumber,
+}: {
+  href: string;
+  prNumber: string;
+}) => {
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      asChild
+      className="h-[1.75em] text-xs px-1.5 py-1 mx-0.5 inline-flex items-center gap-0.5 hover:bg-primary/10 hover:border-primary/50 transition-colors align-middle font-normal border-muted-foreground/30"
+    >
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="no-underline text-muted-foreground hover:text-foreground flex items-center gap-0.5 leading-none"
+      >
+        <Github className="w-2.5 h-2.5 flex-shrink-0" />
+        <span className="text-[9px] opacity-50">/</span>
+        <span className="text-[10px] font-medium">PR #{prNumber}</span>
+      </a>
+    </Button>
+  );
+};
+
+const UserMention = ({
+  username,
+  href,
+}: {
+  username: string;
+  href: string;
+}) => {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Button
+          variant="link"
+          className="h-auto p-0 text-muted-foreground hover:text-foreground underline-offset-4 hover:underline font-normal"
+        >
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="no-underline"
+          >
+            @{username}
+          </a>
+        </Button>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80">
+        <div className="flex justify-between gap-4">
+          <Avatar>
+            <AvatarImage src={`https://github.com/${username}.png`} />
+            <AvatarFallback>
+              {username.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <h4 className="text-sm font-semibold">@{username}</h4>
+            <p className="text-sm text-muted-foreground">
+              Contributeur OpenMC – développeur du plugin.
+            </p>
+            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+              <Github className="w-3 h-3" />
+              <span>GitHub Profile</span>
+            </div>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
 };
 
 export default function ChangelogPage() {
@@ -314,7 +441,7 @@ export default function ChangelogPage() {
                                       Voir les détails
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent className="max-w-4xl max-h-[80vh] bg-card border-border">
+                                  <DialogContent className="max-w-8xl max-h-[80vh] w-[100vw] bg-card border-border">
                                     <DialogHeader>
                                       <DialogTitle className="flex items-center gap-2 text-primary">
                                         <Tag className="w-5 h-5" />
@@ -365,16 +492,68 @@ export default function ChangelogPage() {
                                                 {children}
                                               </li>
                                             ),
-                                            a: ({ href, children }) => (
-                                              <a
-                                                href={href}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-primary hover:text-primary/80 underline transition-colors"
-                                              >
-                                                {children}
-                                              </a>
-                                            ),
+                                            a: ({ href, children }) => {
+                                              // Vérifier si c'est un profil GitHub
+                                              const isGitHubProfile =
+                                                href &&
+                                                ((href.includes(
+                                                  "github.com/"
+                                                ) &&
+                                                  !href.includes("/")) ||
+                                                  href.match(
+                                                    /github\.com\/[^\/]+$/
+                                                  ));
+
+                                              if (isGitHubProfile) {
+                                                const username =
+                                                  href.split("github.com/")[1];
+                                                return (
+                                                  <UserMention
+                                                    username={username}
+                                                    href={href}
+                                                  />
+                                                );
+                                              }
+
+                                              // Vérifier si c'est une PR GitHub
+                                              const isPullRequest =
+                                                href &&
+                                                href.includes("github.com") &&
+                                                href.includes("/pull/");
+                                              if (isPullRequest) {
+                                                const prNumber = href
+                                                  .split("/pull/")[1]
+                                                  ?.split(/[\/\?#]/)[0];
+                                                return (
+                                                  <PullRequestLink
+                                                    href={href}
+                                                    prNumber={prNumber || "?"}
+                                                  />
+                                                );
+                                              }
+
+                                              // Pour les autres liens
+                                              return (
+                                                <Button
+                                                  variant="outline"
+                                                  size="sm"
+                                                  asChild
+                                                  className="h-[1.25em] text-xs px-1.5 mx-0.5 inline-flex items-center gap-0.5 hover:bg-primary/10 hover:border-primary/50 transition-colors align-middle font-normal border-muted-foreground/30"
+                                                >
+                                                  <a
+                                                    href={href}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="no-underline text-muted-foreground hover:text-foreground leading-none"
+                                                  >
+                                                    {getLinkIcon(href || "")}
+                                                    <span className="max-w-[70px] truncate text-[10px] font-medium">
+                                                      {children}
+                                                    </span>
+                                                  </a>
+                                                </Button>
+                                              );
+                                            },
                                             code: ({ children, className }) => (
                                               <code
                                                 className={`text-primary bg-muted px-1 py-0.5 rounded text-sm font-mono ${
@@ -394,8 +573,9 @@ export default function ChangelogPage() {
                                             ),
                                           }}
                                         >
-                                          {cleanReleaseBody(release.body) ||
-                                            "Aucune description disponible."}
+                                          {convertUrlsToMarkdown(
+                                            cleanReleaseBody(release.body)
+                                          ) || "Aucune description disponible."}
                                         </ReactMarkdown>
                                       </div>
                                     </ScrollArea>

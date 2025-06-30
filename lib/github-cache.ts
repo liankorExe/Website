@@ -194,7 +194,6 @@ export class GitHubApi {
   ): Promise<T> {
     const cachedData = GitHubApiCache.get<T>(cacheKey);
     if (cachedData) {
-      console.log(`Données récupérées du cache: ${cacheKey}`);
       return cachedData;
     }
 
@@ -217,7 +216,6 @@ export class GitHubApi {
     const data = await response.json();
 
     GitHubApiCache.set(cacheKey, data, cacheDuration);
-    console.log(`Données sauvegardées en cache: ${cacheKey}`);
 
     return data;
   }

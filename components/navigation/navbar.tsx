@@ -18,13 +18,31 @@ import {
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    // S'assurer que le composant est monté pour éviter les problèmes d'hydratation
+    setIsLoaded(true);
+    
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    
+    // Vérifier immédiatement le scroll au montage
+    handleScroll();
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Force une re-évaluation après un court délai pour s'assurer que l'animation fonctionne
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const handleScroll = () => setIsScrolled(window.scrollY > 20);
+      handleScroll();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -47,11 +65,13 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-[9999] flex justify-center items-center transition-all duration-300 ease-in-out
-                  ${isScrolled ? "h-[130px]" : "h-[70px]"}`}
+        className={`fixed top-0 left-0 w-full z-[9999] flex justify-center items-center 
+                  ${isLoaded ? 'transition-all duration-300 ease-in-out' : ''}
+                  ${isScrolled ? "h-[130px]" : "h-[80px]"}`}
       >
         <div
-          className={`flex justify-between items-center bg-primary/70 dark:bg-primary/10 backdrop-blur-[30px] text-white transition-all duration-300 ease-in-out
+          className={`flex justify-between items-center bg-primary/70 dark:bg-primary/10 backdrop-blur-[30px] text-white 
+                      ${isLoaded ? 'transition-all duration-300 ease-in-out' : ''}
                       ${
                         isScrolled
                           ? "w-[calc(100%-60px)] max-w-[1300px] mx-[30px] rounded-[30px] px-6 py-4"
