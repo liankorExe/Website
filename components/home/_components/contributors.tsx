@@ -76,7 +76,7 @@ export default function Contributors() {
     return (
       <section className="flex flex-col items-center justify-center py-16 w-full px-4">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-center mb-10">
-          Nos Contributeurs (Website & PluginV2)
+          Nos Contributeurs
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 w-full max-w-4xl">
           {Array.from({ length: 12 }).map((_, i) => (
