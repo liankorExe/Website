@@ -6,6 +6,16 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { GitHubApi } from "@/lib/github-cache";
 
+interface ContributorStat {
+  author: {
+    login: string;
+  };
+  weeks: Array<{
+    a: number;
+    d: number;
+  }>;
+}
+
 interface Contributor {
   id: number;
   login: string;
@@ -27,7 +37,6 @@ export default function Contributors() {
       try {
         setLoading(true);
 
-        // Utilisation du cache pour récupérer les contributeurs
         const data = await GitHubApi.getContributors(
           "ServerOpenMC",
           "PluginV2"
@@ -36,22 +45,22 @@ export default function Contributors() {
         const contributorsWithStats = await Promise.all(
           data.slice(0, 12).map(async (contributor: Contributor) => {
             try {
-              // Utilisation du cache pour les stats des contributeurs
               const statsData = await GitHubApi.getContributorStats(
                 "ServerOpenMC",
                 "PluginV2"
               );
               const contributorStats = statsData.find(
-                (stat: any) => stat.author.login === contributor.login
+                (stat: ContributorStat) =>
+                  stat.author.login === contributor.login
               );
 
               if (contributorStats) {
                 const totalAdditions = contributorStats.weeks.reduce(
-                  (sum: number, week: any) => sum + week.a,
+                  (sum: number, week: { a: number; d: number }) => sum + week.a,
                   0
                 );
                 const totalDeletions = contributorStats.weeks.reduce(
-                  (sum: number, week: any) => sum + week.d,
+                  (sum: number, week: { a: number; d: number }) => sum + week.d,
                   0
                 );
 
@@ -63,7 +72,7 @@ export default function Contributors() {
                 };
               }
               return contributor;
-            } catch (err) {
+            } catch {
               return contributor;
             }
           })

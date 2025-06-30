@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -99,13 +100,24 @@ const truncateMessage = (message: string, maxLength: number = 100) => {
   return firstLine.substring(0, maxLength - 3) + "...";
 };
 
+const cleanReleaseBody = (body: string) => {
+  if (!body) return body;
+
+  return body
+    .replace(
+      /<!-- Release notes generated using configuration in \.github\/release\.yml at \w+ -->\s*/g,
+      ""
+    )
+    .replace(/<!-- .* -->\s*/g, "")
+    .trim();
+};
+
 export default function ChangelogPage() {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [releases, setReleases] = useState<Release[]>([]);
   const [isLoadingCommits, setIsLoadingCommits] = useState(true);
   const [isLoadingReleases, setIsLoadingReleases] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRelease, setSelectedRelease] = useState<Release | null>(null);
 
   const fetchCommits = async () => {
     try {
@@ -126,9 +138,12 @@ export default function ChangelogPage() {
     try {
       setIsLoadingReleases(true);
 
-
       const data = await GitHubApi.getReleases("ServerOpenMC", "PluginV2", 10);
-      setReleases(data.filter((release: Release) => !release.draft));
+      const filteredReleases = data.filter(
+        (release: Release) => !release.draft
+      );
+
+      setReleases(filteredReleases);
     } catch (error) {
       console.error("Erreur lors de la récupération des releases:", error);
       setError(error instanceof Error ? error.message : "Erreur inconnue");
@@ -196,8 +211,8 @@ export default function ChangelogPage() {
             Changelog
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Suivez l'évolution du plugin OpenMC avec les dernières mises à jour,
-            corrections et nouvelles fonctionnalités.
+            Suivez l&apos;évolution du plugin OpenMC avec les dernières mises à
+            jour, corrections et nouvelles fonctionnalités.
           </p>
         </motion.div>
 
@@ -295,9 +310,6 @@ export default function ChangelogPage() {
                                       variant="outline"
                                       size="sm"
                                       className="border-primary/50 text-primary hover:bg-primary/10"
-                                      onClick={() =>
-                                        setSelectedRelease(release)
-                                      }
                                     >
                                       Voir les détails
                                     </Button>
@@ -315,9 +327,74 @@ export default function ChangelogPage() {
                                       </DialogDescription>
                                     </DialogHeader>
                                     <ScrollArea className="max-h-[60vh]">
-                                      <div className="prose prose-sm max-w-none dark:prose-invert">
-                                        <ReactMarkdown>
-                                          {release.body ||
+                                      <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-primary prose-links:text-primary prose-strong:text-foreground prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-blockquote:border-l-primary prose-hr:border-border">
+                                        <ReactMarkdown
+                                          components={{
+                                            h1: ({ children }) => (
+                                              <h1 className="text-2xl font-bold text-primary mb-4 mt-6">
+                                                {children}
+                                              </h1>
+                                            ),
+                                            h2: ({ children }) => (
+                                              <h2 className="text-xl font-semibold text-primary mb-3 mt-5">
+                                                {children}
+                                              </h2>
+                                            ),
+                                            h3: ({ children }) => (
+                                              <h3 className="text-lg font-medium text-primary mb-2 mt-4">
+                                                {children}
+                                              </h3>
+                                            ),
+                                            p: ({ children }) => (
+                                              <p className="text-foreground mb-3 leading-relaxed">
+                                                {children}
+                                              </p>
+                                            ),
+                                            ul: ({ children }) => (
+                                              <ul className="list-disc list-inside mb-4 space-y-1 text-foreground">
+                                                {children}
+                                              </ul>
+                                            ),
+                                            ol: ({ children }) => (
+                                              <ol className="list-decimal list-inside mb-4 space-y-1 text-foreground">
+                                                {children}
+                                              </ol>
+                                            ),
+                                            li: ({ children }) => (
+                                              <li className="text-foreground">
+                                                {children}
+                                              </li>
+                                            ),
+                                            a: ({ href, children }) => (
+                                              <a
+                                                href={href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-primary hover:text-primary/80 underline transition-colors"
+                                              >
+                                                {children}
+                                              </a>
+                                            ),
+                                            code: ({ children, className }) => (
+                                              <code
+                                                className={`text-primary bg-muted px-1 py-0.5 rounded text-sm font-mono ${
+                                                  className || ""
+                                                }`}
+                                              >
+                                                {children}
+                                              </code>
+                                            ),
+                                            blockquote: ({ children }) => (
+                                              <blockquote className="border-l-4 border-primary pl-4 my-4 text-muted-foreground italic">
+                                                {children}
+                                              </blockquote>
+                                            ),
+                                            hr: () => (
+                                              <hr className="border-border my-6" />
+                                            ),
+                                          }}
+                                        >
+                                          {cleanReleaseBody(release.body) ||
                                             "Aucune description disponible."}
                                         </ReactMarkdown>
                                       </div>
@@ -397,16 +474,28 @@ export default function ChangelogPage() {
                           <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="flex-shrink-0">
                               {commit.author ? (
-                                <img
+                                <Image
                                   src={commit.author.avatar_url}
                                   alt={commit.author.login}
+                                  width={32}
+                                  height={32}
                                   className="w-8 h-8 rounded-full"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = "none";
+                                    target.nextElementSibling?.classList.remove(
+                                      "hidden"
+                                    );
+                                  }}
                                 />
-                              ) : (
-                                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                                  <User className="w-4 h-4 text-muted-foreground" />
-                                </div>
-                              )}
+                              ) : null}
+                              <div
+                                className={`w-8 h-8 rounded-full bg-muted flex items-center justify-center ${
+                                  commit.author ? "hidden" : ""
+                                }`}
+                              >
+                                <User className="w-4 h-4 text-muted-foreground" />
+                              </div>
                             </div>
 
                             <div className="flex-1 min-w-0">

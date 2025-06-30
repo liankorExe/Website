@@ -44,7 +44,6 @@ export default function Header() {
       try {
         setLoading(true);
 
-        // Utilisation du cache pour les appels API
         const contributors = await GitHubApi.getContributors(
           "ServerOpenMC",
           "PluginV2"
@@ -56,7 +55,8 @@ export default function Header() {
         const orgsData = await GitHubApi.getOrgRepositories("ServerOpenMC");
 
         const totalCommits = contributors.reduce(
-          (sum: number, contributor: any) => sum + contributor.contributions,
+          (sum: number, contributor: { contributions: number }) =>
+            sum + contributor.contributions,
           0
         );
 

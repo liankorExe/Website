@@ -14,6 +14,16 @@ import { Heart, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { GitHubApi } from "@/lib/github-cache";
 
+interface WebsiteContributorStat {
+  author: {
+    login: string;
+  };
+  weeks: Array<{
+    a: number;
+    d: number;
+  }>;
+}
+
 interface WebsiteContributor {
   id: number;
   login: string;
@@ -51,16 +61,16 @@ export default function Footer() {
                   "Website"
                 );
                 const contributorStats = statsData.find(
-                  (stat: any) => stat.author.login === contributor.login
+                  (stat: WebsiteContributorStat) => stat.author.login === contributor.login
                 );
 
                 if (contributorStats) {
                   const totalAdditions = contributorStats.weeks.reduce(
-                    (sum: number, week: any) => sum + week.a,
+                    (sum: number, week: { a: number; d: number }) => sum + week.a,
                     0
                   );
                   const totalDeletions = contributorStats.weeks.reduce(
-                    (sum: number, week: any) => sum + week.d,
+                    (sum: number, week: { a: number; d: number }) => sum + week.d,
                     0
                   );
 
@@ -72,7 +82,7 @@ export default function Footer() {
                   };
                 }
                 return contributor;
-              } catch (err) {
+              } catch {
                 return contributor;
               }
             })
@@ -308,7 +318,7 @@ export default function Footer() {
                 href="#"
                 className="hover:text-foreground transition-colors"
               >
-                Conditions d'utilisation
+                Conditions d&apos;utilisation
               </Link>
             </div>
           </div>

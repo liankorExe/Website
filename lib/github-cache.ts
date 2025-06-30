@@ -9,6 +9,67 @@ interface CacheData<T> {
   expiresIn: number; // en millisecondes
 }
 
+interface GitHubContributor {
+  id: number;
+  login: string;
+  avatar_url: string;
+  html_url: string;
+  contributions: number;
+}
+
+interface GitHubRepository {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  html_url: string;
+}
+
+interface GitHubCommit {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      name: string;
+      date: string;
+    };
+  };
+  author: {
+    login: string;
+    avatar_url: string;
+    html_url: string;
+  } | null;
+  html_url: string;
+}
+
+interface GitHubRelease {
+  id: number;
+  tag_name: string;
+  name: string;
+  body: string;
+  published_at: string;
+  prerelease: boolean;
+  draft: boolean;
+  html_url: string;
+  author: {
+    login: string;
+    avatar_url: string;
+    html_url: string;
+  };
+}
+
+interface GitHubContributorStat {
+  author: {
+    login: string;
+  };
+  weeks: Array<{
+    a: number;
+    d: number;
+  }>;
+}
+
 export class GitHubApiCache {
   private static readonly PREFIX = "github_cache_";
 
@@ -83,7 +144,7 @@ export class GitHubApiCache {
         const cachedItem = localStorage.getItem(key);
         if (cachedItem) {
           try {
-            const cacheData: CacheData<any> = JSON.parse(cachedItem);
+            const cacheData: CacheData<unknown> = JSON.parse(cachedItem);
             const now = Date.now();
 
             if (now - cacheData.timestamp > cacheData.expiresIn) {
@@ -161,18 +222,24 @@ export class GitHubApi {
     return data;
   }
 
-  static async getContributors(owner: string, repo: string): Promise<any[]> {
+  static async getContributors(
+    owner: string,
+    repo: string
+  ): Promise<GitHubContributor[]> {
     const cacheKey = `contributors_${owner}_${repo}`;
-    return this.fetchWithCache(
+    return this.fetchWithCache<GitHubContributor[]>(
       `https://api.github.com/repos/${owner}/${repo}/contributors`,
       cacheKey,
       this.CACHE_DURATION.CONTRIBUTORS
     );
   }
 
-  static async getRepository(owner: string, repo: string): Promise<any> {
+  static async getRepository(
+    owner: string,
+    repo: string
+  ): Promise<GitHubRepository> {
     const cacheKey = `repository_${owner}_${repo}`;
-    return this.fetchWithCache(
+    return this.fetchWithCache<GitHubRepository>(
       `https://api.github.com/repos/${owner}/${repo}`,
       cacheKey,
       this.CACHE_DURATION.REPOSITORY
@@ -182,9 +249,9 @@ export class GitHubApi {
   static async getContributorStats(
     owner: string,
     repo: string
-  ): Promise<any[]> {
+  ): Promise<GitHubContributorStat[]> {
     const cacheKey = `stats_${owner}_${repo}`;
-    return this.fetchWithCache(
+    return this.fetchWithCache<GitHubContributorStat[]>(
       `https://api.github.com/repos/${owner}/${repo}/stats/contributors`,
       cacheKey,
       this.CACHE_DURATION.STATS
@@ -195,9 +262,9 @@ export class GitHubApi {
     owner: string,
     repo: string,
     perPage: number = 20
-  ): Promise<any[]> {
+  ): Promise<GitHubCommit[]> {
     const cacheKey = `commits_${owner}_${repo}_${perPage}`;
-    return this.fetchWithCache(
+    return this.fetchWithCache<GitHubCommit[]>(
       `https://api.github.com/repos/${owner}/${repo}/commits?per_page=${perPage}`,
       cacheKey,
       this.CACHE_DURATION.COMMITS
@@ -208,18 +275,18 @@ export class GitHubApi {
     owner: string,
     repo: string,
     perPage: number = 10
-  ): Promise<any[]> {
+  ): Promise<GitHubRelease[]> {
     const cacheKey = `releases_${owner}_${repo}_${perPage}`;
-    return this.fetchWithCache(
+    return this.fetchWithCache<GitHubRelease[]>(
       `https://api.github.com/repos/${owner}/${repo}/releases?per_page=${perPage}`,
       cacheKey,
       this.CACHE_DURATION.RELEASES
     );
   }
 
-  static async getOrgRepositories(org: string): Promise<any[]> {
+  static async getOrgRepositories(org: string): Promise<GitHubRepository[]> {
     const cacheKey = `org_repos_${org}`;
-    return this.fetchWithCache(
+    return this.fetchWithCache<GitHubRepository[]>(
       `https://api.github.com/orgs/${org}/repos`,
       cacheKey,
       this.CACHE_DURATION.REPOSITORY
