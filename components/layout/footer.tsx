@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Heart, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { GitHubApi } from "@/lib/github-cache";
 
 interface WebsiteContributorStat {
@@ -124,10 +125,14 @@ export default function Footer() {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">
-                    OMC
-                  </span>
+                <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="/branding/logoomc.png"
+                    alt="Logo OpenMC"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <span className="font-bold text-lg">OpenMC</span>
               </div>
