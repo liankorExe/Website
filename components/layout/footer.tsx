@@ -61,16 +61,19 @@ export default function Footer() {
                   "Website"
                 );
                 const contributorStats = statsData.find(
-                  (stat: WebsiteContributorStat) => stat.author.login === contributor.login
+                  (stat: WebsiteContributorStat) =>
+                    stat.author.login === contributor.login
                 );
 
                 if (contributorStats) {
                   const totalAdditions = contributorStats.weeks.reduce(
-                    (sum: number, week: { a: number; d: number }) => sum + week.a,
+                    (sum: number, week: { a: number; d: number }) =>
+                      sum + week.a,
                     0
                   );
                   const totalDeletions = contributorStats.weeks.reduce(
-                    (sum: number, week: { a: number; d: number }) => sum + week.d,
+                    (sum: number, week: { a: number; d: number }) =>
+                      sum + week.d,
                     0
                   );
 
@@ -149,7 +152,7 @@ export default function Footer() {
                   </p>
                 ) : (
                   <TooltipProvider>
-                    <div className="flex -space-x-2 *:ring-2 *:ring-background hover:*:scale-110 *:transition-transform">
+                    <div className="flex -space-x-2">
                       {websiteContributors.map((contributor, index) => (
                         <motion.div
                           key={contributor.id}
@@ -161,7 +164,7 @@ export default function Footer() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <div className="relative group cursor-pointer">
-                                <Avatar className="w-8 h-8 hover:z-10 transition-all duration-200 hover:scale-110">
+                                <Avatar className="w-8 h-8 ring-2 ring-background hover:z-10 transition-all duration-200 hover:scale-110 hover:ring-primary/20">
                                   <AvatarImage
                                     src={contributor.avatar_url}
                                     alt={`@${contributor.login}`}
@@ -188,7 +191,7 @@ export default function Footer() {
                                 {contributor.netLines !== undefined && (
                                   <p className="text-xs text-muted-foreground">
                                     {contributor.netLines >= 0 ? "+" : ""}
-                                    {contributor.netLines} lignes nettes
+                                    {contributor.netLines} lignes
                                   </p>
                                 )}
                                 <div className="flex justify-center mt-1">
