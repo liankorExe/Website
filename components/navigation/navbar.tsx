@@ -80,7 +80,6 @@ export default function Navbar() {
               </div>
             ))}
           </div>
-
           <div className="hidden md:flex">
             <Button className="group" onClick={() => router.push("/join")}>
               Rejoindre le Serveur
