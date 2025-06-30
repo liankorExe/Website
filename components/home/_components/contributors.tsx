@@ -93,9 +93,9 @@ export default function Contributors() {
   if (error) {
     return (
       <section className="flex flex-col items-center justify-center py-16 w-full px-4">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-center mb-10">
-          Nos Contributeurs (Website & PluginV2)
-        </h2>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-center mb-10">
+          Nos Contributeurs
+        </h1>
         <p className="text-red-500 text-center">{error}</p>
       </section>
     );
@@ -110,7 +110,7 @@ export default function Contributors() {
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
       >
-        Nos Contributeurs (Website & PluginV2)
+        Nos Contributeurs
       </motion.h2>
 
       <motion.div
