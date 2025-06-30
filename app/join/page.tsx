@@ -126,7 +126,7 @@ export default function JoinPage() {
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <div className="bg-card rounded-xl p-6 border shadow-sm">
               <h2 className="text-2xl font-bold mb-4">Adresse du serveur</h2>
-              <div className="bg-muted rounded-lg p-4 font-mono text-lg mb-4 flex items-center justify-between">
+              <div className="bg-background rounded-lg p-4 font-mono text-lg mb-4 flex items-center justify-between">
                 <span>beta.openmc.fr</span>
                 <button
                   onClick={copyIP}
