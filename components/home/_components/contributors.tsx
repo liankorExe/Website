@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { GitHubApi } from "@/lib/github-cache";
 
 interface Contributor {
   id: number;
@@ -11,6 +12,9 @@ interface Contributor {
   avatar_url: string;
   html_url: string;
   contributions: number;
+  additions?: number;
+  deletions?: number;
+  netLines?: number;
 }
 
 export default function Contributors() {
@@ -23,43 +27,56 @@ export default function Contributors() {
       try {
         setLoading(true);
 
-        const [websiteResponse, pluginResponse] = await Promise.all([
-          fetch(
-            "https://api.github.com/repos/ServerOpenMC/Website/contributors"
-          ),
-          fetch(
-            "https://api.github.com/repos/ServerOpenMC/PluginV2/contributors"
-          ),
-        ]);
+        // Utilisation du cache pour récupérer les contributeurs
+        const data = await GitHubApi.getContributors(
+          "ServerOpenMC",
+          "PluginV2"
+        );
 
-        if (!websiteResponse.ok || !pluginResponse.ok) {
-          throw new Error("Erreur lors de la récupération des contributeurs");
-        }
+        const contributorsWithStats = await Promise.all(
+          data.slice(0, 12).map(async (contributor: Contributor) => {
+            try {
+              // Utilisation du cache pour les stats des contributeurs
+              const statsData = await GitHubApi.getContributorStats(
+                "ServerOpenMC",
+                "PluginV2"
+              );
+              const contributorStats = statsData.find(
+                (stat: any) => stat.author.login === contributor.login
+              );
 
-        const [websiteData, pluginData] = await Promise.all([
-          websiteResponse.json(),
-          pluginResponse.json(),
-        ]);
+              if (contributorStats) {
+                const totalAdditions = contributorStats.weeks.reduce(
+                  (sum: number, week: any) => sum + week.a,
+                  0
+                );
+                const totalDeletions = contributorStats.weeks.reduce(
+                  (sum: number, week: any) => sum + week.d,
+                  0
+                );
 
-        const allContributors = [...websiteData, ...pluginData];
-        const uniqueContributors = allContributors.reduce(
-          (acc: Contributor[], current: Contributor) => {
-            const existing = acc.find((c) => c.login === current.login);
-            if (existing) {
-              existing.contributions += current.contributions;
-            } else {
-              acc.push(current);
+                return {
+                  ...contributor,
+                  additions: totalAdditions,
+                  deletions: totalDeletions,
+                  netLines: totalAdditions - totalDeletions,
+                };
+              }
+              return contributor;
+            } catch (err) {
+              return contributor;
             }
-            return acc;
-          },
-          []
+          })
         );
 
-        uniqueContributors.sort(
-          (a: Contributor, b: Contributor) => b.contributions - a.contributions
-        );
+        contributorsWithStats.sort((a: Contributor, b: Contributor) => {
+          if (a.additions !== undefined && b.additions !== undefined) {
+            return b.additions - a.additions;
+          }
+          return b.contributions - a.contributions;
+        });
 
-        setContributors(uniqueContributors);
+        setContributors(contributorsWithStats);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Une erreur est survenue"
@@ -154,8 +171,17 @@ export default function Contributors() {
                 {contributor.login}
               </p>
               <p className="text-xs text-muted-foreground">
-                {contributor.contributions} contributions
+                {contributor.contributions} commits
               </p>
+              {(contributor.additions || contributor.deletions) && (
+                <p className="text-xs text-muted-foreground">
+                  {contributor.netLines !== undefined &&
+                  contributor.netLines >= 0
+                    ? "+"
+                    : ""}
+                  {contributor.netLines || 0} lignes nettes
+                </p>
+              )}
             </Link>
           </motion.div>
         ))}

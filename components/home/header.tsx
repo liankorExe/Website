@@ -8,13 +8,28 @@ import { DotPattern } from "@/components/magicui/dot-pattern";
 import { Button } from "@/components/ui/button";
 import homePageImage from "@/public/placeholder/homepage.webp";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import Contributors from "./_components/contributors";
+import { GitHubApi } from "@/lib/github-cache";
+
+interface GitHubStats {
+  contributors: number;
+  commits: number;
+  repositories: number;
+  creationYear: number;
+}
 
 export default function Header() {
   const { scrollY } = useScroll();
   const statsRef = useRef(null);
   const statsInView = useInView(statsRef, { once: true, margin: "-100px" });
+  const [githubStats, setGithubStats] = useState<GitHubStats>({
+    contributors: 0,
+    commits: 0,
+    repositories: 0,
+    creationYear: 2024,
+  });
+  const [loading, setLoading] = useState(true);
 
   const imageScale = useTransform(scrollY, [0, 500], [1, 1.1]);
   const imageOpacity = useTransform(scrollY, [0, 300], [1, 0.8]);
@@ -23,6 +38,55 @@ export default function Header() {
   const textScale = useTransform(scrollY, [0, 400], [1, 0.8]);
   const textOpacity = useTransform(scrollY, [0, 300], [1, 0.6]);
   const textY = useTransform(scrollY, [0, 400], [0, -20]);
+
+  useEffect(() => {
+    const fetchGitHubStats = async () => {
+      try {
+        setLoading(true);
+
+        // Utilisation du cache pour les appels API
+        const contributors = await GitHubApi.getContributors(
+          "ServerOpenMC",
+          "PluginV2"
+        );
+        const repoData = await GitHubApi.getRepository(
+          "ServerOpenMC",
+          "PluginV2"
+        );
+        const orgsData = await GitHubApi.getOrgRepositories("ServerOpenMC");
+
+        const totalCommits = contributors.reduce(
+          (sum: number, contributor: any) => sum + contributor.contributions,
+          0
+        );
+
+        const creationYear = new Date(repoData.created_at).getFullYear();
+
+        setGithubStats({
+          contributors: contributors.length,
+          commits: totalCommits,
+          repositories: orgsData.length,
+          creationYear: creationYear,
+        });
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des stats GitHub:",
+          error
+        );
+
+        setGithubStats({
+          contributors: 17,
+          commits: 223,
+          repositories: 7,
+          creationYear: 2024,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGitHubStats();
+  }, []);
 
   return (
     <div className="relative px-4 sm:px-6 lg:px-8">
@@ -144,10 +208,22 @@ export default function Header() {
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {[
-                { number: "34+", label: "Contributeurs" },
-                { number: "7+", label: "Répertoires" },
-                { number: "1M+", label: "Téléchargements" },
-                { number: "99%", label: "Satisfaction" },
+                {
+                  number: loading ? "..." : githubStats.contributors.toString(),
+                  label: "Contributeurs",
+                },
+                {
+                  number: loading ? "..." : githubStats.commits.toString(),
+                  label: "Commits",
+                },
+                {
+                  number: loading ? "..." : `${githubStats.repositories}+`,
+                  label: "Répertoires",
+                },
+                {
+                  number: loading ? "..." : githubStats.creationYear.toString(),
+                  label: "Création",
+                },
               ].map((item, i) => (
                 <motion.div
                   key={i}

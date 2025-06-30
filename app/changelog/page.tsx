@@ -1,0 +1,496 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import ReactMarkdown from "react-markdown";
+import {
+  Calendar,
+  GitCommit,
+  Tag,
+  ExternalLink,
+  Clock,
+  User,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
+import { GitHubApi } from "@/lib/github-cache";
+
+interface Commit {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      name: string;
+      date: string;
+    };
+  };
+  author: {
+    login: string;
+    avatar_url: string;
+    html_url: string;
+  } | null;
+  html_url: string;
+}
+
+interface Release {
+  id: number;
+  tag_name: string;
+  name: string;
+  body: string;
+  published_at: string;
+  prerelease: boolean;
+  draft: boolean;
+  html_url: string;
+  author: {
+    login: string;
+    avatar_url: string;
+    html_url: string;
+  };
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const formatRelativeTime = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return "À l'instant";
+  if (diffInSeconds < 3600)
+    return `Il y a ${Math.floor(diffInSeconds / 60)} min`;
+  if (diffInSeconds < 86400)
+    return `Il y a ${Math.floor(diffInSeconds / 3600)}h`;
+  if (diffInSeconds < 604800)
+    return `Il y a ${Math.floor(diffInSeconds / 86400)} jours`;
+  return formatDate(dateString);
+};
+
+const truncateMessage = (message: string, maxLength: number = 100) => {
+  const firstLine = message.split("\n")[0];
+  if (firstLine.length <= maxLength) return firstLine;
+  return firstLine.substring(0, maxLength - 3) + "...";
+};
+
+export default function ChangelogPage() {
+  const [commits, setCommits] = useState<Commit[]>([]);
+  const [releases, setReleases] = useState<Release[]>([]);
+  const [isLoadingCommits, setIsLoadingCommits] = useState(true);
+  const [isLoadingReleases, setIsLoadingReleases] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedRelease, setSelectedRelease] = useState<Release | null>(null);
+
+  const fetchCommits = async () => {
+    try {
+      setIsLoadingCommits(true);
+      setError(null);
+
+      const data = await GitHubApi.getCommits("ServerOpenMC", "PluginV2", 20);
+      setCommits(data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des commits:", error);
+      setError(error instanceof Error ? error.message : "Erreur inconnue");
+    } finally {
+      setIsLoadingCommits(false);
+    }
+  };
+
+  const fetchReleases = async () => {
+    try {
+      setIsLoadingReleases(true);
+
+
+      const data = await GitHubApi.getReleases("ServerOpenMC", "PluginV2", 10);
+      setReleases(data.filter((release: Release) => !release.draft));
+    } catch (error) {
+      console.error("Erreur lors de la récupération des releases:", error);
+      setError(error instanceof Error ? error.message : "Erreur inconnue");
+    } finally {
+      setIsLoadingReleases(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCommits();
+    fetchReleases();
+  }, []);
+
+  const handleRetry = () => {
+    fetchCommits();
+    fetchReleases();
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background pt-24 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card className="bg-destructive/10 border-destructive/20">
+              <CardHeader className="text-center">
+                <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+                <CardTitle className="text-2xl text-destructive">
+                  Erreur de chargement
+                </CardTitle>
+                <CardDescription className="text-destructive/80">
+                  {error}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Button
+                  onClick={handleRetry}
+                  variant="outline"
+                  className="border-destructive/50 text-destructive hover:bg-destructive/10"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Réessayer
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background pt-24 px-4">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-4">
+            Changelog
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Suivez l'évolution du plugin OpenMC avec les dernières mises à jour,
+            corrections et nouvelles fonctionnalités.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Card className="bg-card/50 border-border backdrop-blur-sm h-fit">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-2xl text-primary">
+                  <Tag className="w-6 h-6" />
+                  Versions officielles
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Les dernières versions stables du plugin
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoadingReleases ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-4 bg-muted rounded mb-2"></div>
+                        <div className="h-3 bg-muted rounded w-3/4"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : releases.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">
+                    Aucune version disponible
+                  </p>
+                ) : (
+                  <ScrollArea className="h-[400px]">
+                    <div className="space-y-4">
+                      {releases.map((release, index) => (
+                        <motion.div
+                          key={release.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <Card className="bg-card/80 border-border/50 hover:bg-card transition-colors">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Badge
+                                    variant={
+                                      release.prerelease
+                                        ? "secondary"
+                                        : "default"
+                                    }
+                                    className={
+                                      release.prerelease
+                                        ? "bg-secondary text-secondary-foreground"
+                                        : "bg-primary text-primary-foreground"
+                                    }
+                                  >
+                                    {release.tag_name}
+                                  </Badge>
+                                  {release.prerelease && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-muted-foreground border-border"
+                                    >
+                                      Pre-release
+                                    </Badge>
+                                  )}
+                                </div>
+                                <span className="text-sm text-muted-foreground">
+                                  {formatRelativeTime(release.published_at)}
+                                </span>
+                              </div>
+                              <CardTitle className="text-lg text-foreground">
+                                {release.name || release.tag_name}
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-0">
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                                <div className="flex items-center gap-1">
+                                  <User className="w-4 h-4" />
+                                  {release.author.login}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4" />
+                                  {formatDate(release.published_at)}
+                                </div>
+                              </div>
+
+                              <div className="flex gap-2">
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="border-primary/50 text-primary hover:bg-primary/10"
+                                      onClick={() =>
+                                        setSelectedRelease(release)
+                                      }
+                                    >
+                                      Voir les détails
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-4xl max-h-[80vh] bg-card border-border">
+                                    <DialogHeader>
+                                      <DialogTitle className="flex items-center gap-2 text-primary">
+                                        <Tag className="w-5 h-5" />
+                                        {release.name || release.tag_name}
+                                      </DialogTitle>
+                                      <DialogDescription className="text-muted-foreground">
+                                        Publié le{" "}
+                                        {formatDate(release.published_at)} par{" "}
+                                        {release.author.login}
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <ScrollArea className="max-h-[60vh]">
+                                      <div className="prose prose-sm max-w-none dark:prose-invert">
+                                        <ReactMarkdown>
+                                          {release.body ||
+                                            "Aucune description disponible."}
+                                        </ReactMarkdown>
+                                      </div>
+                                    </ScrollArea>
+                                  </DialogContent>
+                                </Dialog>
+
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  asChild
+                                  className="text-muted-foreground hover:text-foreground"
+                                >
+                                  <a
+                                    href={release.html_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <ExternalLink className="w-4 h-4" />
+                                  </a>
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <Card className="bg-card/50 border-border backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-2xl text-primary">
+                  <GitCommit className="w-6 h-6" />
+                  Commits récents
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Les dernières modifications du code source
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoadingCommits ? (
+                  <div className="space-y-4">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-muted rounded-full"></div>
+                          <div className="h-4 bg-muted rounded flex-1"></div>
+                        </div>
+                        <div className="h-3 bg-muted rounded w-2/3 ml-11"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : commits.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">
+                    Aucun commit disponible
+                  </p>
+                ) : (
+                  <ScrollArea className="h-[400px]">
+                    <div className="space-y-4">
+                      {commits.map((commit, index) => (
+                        <motion.div
+                          key={commit.sha}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="group"
+                        >
+                          <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex-shrink-0">
+                              {commit.author ? (
+                                <img
+                                  src={commit.author.avatar_url}
+                                  alt={commit.author.login}
+                                  className="w-8 h-8 rounded-full"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                                  <User className="w-4 h-4 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                                  {commit.author?.login ||
+                                    commit.commit.author.name}
+                                </p>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Clock className="w-3 h-3" />
+                                  {formatRelativeTime(
+                                    commit.commit.author.date
+                                  )}
+                                </div>
+                              </div>
+
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {truncateMessage(commit.commit.message)}
+                              </p>
+
+                              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                <Badge
+                                  variant="outline"
+                                  className="text-muted-foreground border-border font-mono text-[10px] px-1 py-0"
+                                >
+                                  {commit.sha.substring(0, 7)}
+                                </Badge>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  asChild
+                                  className="h-6 px-2 text-muted-foreground hover:text-foreground"
+                                >
+                                  <a
+                                    href={commit.html_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+
+                          {index < commits.length - 1 && (
+                            <Separator className="my-2 bg-border" />
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="text-center mt-12 pb-8"
+        >
+          <Card className="bg-card/30 border-border backdrop-blur-sm">
+            <CardContent className="pt-6">
+              <p className="text-muted-foreground mb-2">
+                Données récupérées depuis le repository{" "}
+                <a
+                  href="https://github.com/ServerOpenMC/PluginV2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 transition-colors"
+                >
+                  ServerOpenMC/PluginV2
+                </a>
+              </p>
+              <p className="text-sm text-muted-foreground/70">
+                Mis à jour automatiquement • Développé avec Next.js et shadcn/ui
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
