@@ -30,7 +30,7 @@ export default function JoinPage() {
   const [serverData, setServerData] = useState<ServerStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-
+ 
   useEffect(() => {
     const fetchServerStatus = async () => {
       try {
