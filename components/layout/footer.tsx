@@ -127,7 +127,7 @@ export default function Footer() {
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center overflow-hidden">
                   <Image
-                    src="/branding/logoomc.png"
+                    src="/branding/logoomc.webp"
                     alt="Logo OpenMC"
                     width={32}
                     height={32}
