@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Logo from "@/public/branding/logoomc.png";
+import Logo from "@/public/branding/logoomc.webp";
 import { HomeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
