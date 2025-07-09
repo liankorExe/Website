@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 import { GitHubApi } from "@/lib/github-cache";
 
 interface ContributorStat {
@@ -304,10 +305,7 @@ export default function Contributors() {
               </p>
               {(contributor.additions || contributor.deletions) && (
                 <p className="text-xs text-muted-foreground">
-                  {contributor.netLines !== undefined &&
-                  contributor.netLines >= 0
-                    ? "+"
-                    : ""}
+                  {contributor.netLines !== undefined && contributor.netLines >= 0 && "+"}
                   {contributor.netLines || 0} lignes
                 </p>
               )}
@@ -327,9 +325,10 @@ export default function Contributors() {
           href="https://github.com/ServerOpenMC"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary hover:text-primary/80 transition-colors font-medium text-sm"
+          className="text-primary hover:text-primary/80 transition-colors font-medium text-sm flex items-center gap-1"
         >
-          Voir tous les contributeurs sur GitHub →
+          Voir tous les contributeurs sur GitHub
+          <ChevronRight className="w-4 h-4" />
         </Link>
       </motion.div>
     </motion.section>
