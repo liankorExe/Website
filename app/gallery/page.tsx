@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Préfixe pour les assets selon l'environnement
 const assetPrefix = process.env.NODE_ENV === 'production' ? '/Website' : '';
 
 interface GalleryImage {
