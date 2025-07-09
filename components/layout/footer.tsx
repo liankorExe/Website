@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Logo from "@/public/branding/logoomc.webp";
 import {
   Tooltip,
   TooltipContent,
@@ -127,7 +128,7 @@ export default function Footer() {
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center overflow-hidden">
                   <Image
-                    src="/branding/logoomc.webp"
+                    src={Logo}
                     alt="Logo OpenMC"
                     width={32}
                     height={32}
