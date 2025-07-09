@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
+// Préfixe pour les assets selon l'environnement
+const assetPrefix = process.env.NODE_ENV === 'production' ? '/Website' : '';
+
 interface GalleryImage {
   id: string;
   src: string;
@@ -31,7 +34,7 @@ interface GalleryImage {
 const galleryImages: GalleryImage[] = [
   {
     id: "1",
-    src: "/placeholder/homepage.webp",
+    src: `${assetPrefix}/placeholder/homepage.webp`,
     title: "Château Medieval",
     description:
       "Une magnifique construction médiévale réalisée par la communauté lors de l'événement Build Battle.",
@@ -42,7 +45,7 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: "2",
-    src: "/placeholder/background_omc.png",
+    src: `${assetPrefix}/placeholder/background_omc.png`,
     title: "Paysage de Montagne",
     description:
       "Vue panoramique depuis les montagnes du serveur, capturée au coucher du soleil.",
@@ -53,7 +56,7 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: "3",
-    src: "/placeholder/homepage.webp",
+    src: `${assetPrefix}/placeholder/homepage.webp`,
     title: "Événement Communautaire",
     description:
       "Grand rassemblement de la communauté pour célébrer l'anniversaire du serveur.",
@@ -64,7 +67,7 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: "4",
-    src: "/placeholder/background_omc.png",
+    src: `${assetPrefix}/placeholder/background_omc.png`,
     title: "Ville Moderne",
     description:
       "Centre-ville avec ses gratte-ciels et son architecture contemporaine.",
@@ -75,7 +78,7 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: "5",
-    src: "/placeholder/homepage.webp",
+    src: `${assetPrefix}/placeholder/homepage.webp`,
     title: "Festival des Lumières",
     description:
       "Spectacle de feux d'artifice lors du festival annuel des lumières.",
@@ -86,7 +89,7 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: "6",
-    src: "/placeholder/background_omc.png",
+    src: `${assetPrefix}/placeholder/background_omc.png`,
     title: "Base Spatiale",
     description:
       "Complexe spatial futuriste avec station de lancement et laboratoires.",
