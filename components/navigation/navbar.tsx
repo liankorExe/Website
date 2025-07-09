@@ -75,7 +75,7 @@ export default function Navbar() {
                       }
                       ${
                         isScrolled
-                          ? "w-[calc(100%-60px)] max-w-[1300px] mx-[30px] rounded-[30px] px-6 py-4"
+                          ? "w-[calc(100%-60px)] max-w-[1300px] mx-[30px] rounded-[20px] px-6 py-4"
                           : "w-full max-w-full mx-0 rounded-none px-6 py-4"
                       }`}
         >
