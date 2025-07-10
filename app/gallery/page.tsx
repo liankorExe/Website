@@ -138,14 +138,14 @@ export default function GalleryPage() {
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      builds: "bg-blue-500/10 text-blue-600 border-blue-200",
-      events: "bg-purple-500/10 text-purple-600 border-purple-200",
-      landscapes: "bg-green-500/10 text-green-600 border-green-200",
-      community: "bg-orange-500/10 text-orange-600 border-orange-200",
+      builds: "bg-blue-500/10 text-blue-600 border-blue-500",
+      events: "bg-purple-500/10 text-purple-600 border-purple-500",
+      landscapes: "bg-green-500/10 text-green-600 border-green-500",
+      community: "bg-orange-500/10 text-orange-600 border-orange-500",
     };
     return (
       colors[category as keyof typeof colors] ||
-      "bg-gray-500/10 text-gray-600 border-gray-200"
+      "bg-gray-500/10 text-gray-600 border-gray-500"
     );
   };
 
