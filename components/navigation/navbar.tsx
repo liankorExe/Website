@@ -125,7 +125,7 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-full bg-primary/95 backdrop-blur-xl border-none text-white p-0 z-[10000]"
+                className="w-full bg-primary/95 backdrop-blur-xl border-none text-white p-0 z-[200]"
               >
                 <div className="flex flex-col items-center justify-center h-full space-y-12 p-8">
                   <div className="absolute top-8 left-1/2 transform -translate-x-1/2">

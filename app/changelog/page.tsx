@@ -217,7 +217,7 @@ const UserMention = ({
           </a>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80">
+      <HoverCardContent className="w-80" style={{ zIndex: 99999999, position: 'fixed' }}>
         <div className="flex justify-between gap-4">
           <Avatar>
             <AvatarImage src={`https://github.com/${username}.png`} />
@@ -443,7 +443,13 @@ export default function ChangelogPage() {
                                       Voir les détails
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent className="max-w-8xl max-h-[80vh] w-[100vw] bg-card border-border">
+                                  <DialogContent 
+                                    className="max-w-8xl max-h-[80vh] w-[100vw] bg-card border-border" 
+                                    style={{ 
+                                      zIndex: 9999999,
+                                      position: 'fixed',
+                                    }}
+                                  >
                                     <DialogHeader>
                                       <DialogTitle className="flex items-center gap-2 text-primary">
                                         <Tag className="w-5 h-5" />
