@@ -100,7 +100,9 @@ const formatRelativeTime = (dateString: string) => {
   if (diffInSeconds < 86400)
     return `Il y a ${Math.floor(diffInSeconds / 3600)}h`;
   if (diffInSeconds < 604800)
-    return `Il y a ${Math.floor(diffInSeconds / 86400)} jours`;
+    return `Il y a ${Math.floor(diffInSeconds / 86400)} ${
+      Math.floor(diffInSeconds / 86400) > 1 ? "jours" : "jour"
+    }`;
   return formatDate(dateString);
 };
 
