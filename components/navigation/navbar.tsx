@@ -58,11 +58,10 @@ export default function Navbar() {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
-
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-[9999] flex justify-center items-center 
+        className={`${menuOpen ? "hidden" : "fixed"} top-0 left-0 w-full z-[9999] flex justify-center items-center 
                   ${isLoaded ? "transition-all duration-300 ease-in-out" : ""}
                   ${isScrolled ? "h-[130px]" : "h-[80px]"}`}
       >
